@@ -124,7 +124,7 @@ ROSPublisher::getHeader(const ixblue_stdbin_decoder::Data::NavHeader& headerData
     // --- Timestamp
     if(useInsAsTimeReference)
     {
-
+        RCLCPP_INFO_STREAM(this->getNode()->get_logger(), "headerData.navigationDataValidityTime_100us is: " << headerData.navigationDataValidityTime_100us);
         uint32_t sec = (uint32_t)((headerData.navigationDataValidityTime_100us) / 10000);
         uint32_t nsec =
             (uint32_t)(((headerData.navigationDataValidityTime_100us) % 10000) * 100000);
@@ -132,11 +132,13 @@ ROSPublisher::getHeader(const ixblue_stdbin_decoder::Data::NavHeader& headerData
         // --- Stamp origin = unix i.e. since 1st of january 1970
         if(useUnixAsTimeOrigin)
         {
+            RCLCPP_INFO_STREAM(this->getNode()->get_logger(), "navData.systemDate.get().year is " << navData.systemDate.get().year);
+            RCLCPP_INFO_STREAM(this->getNode()->get_logger(), "navData.systemDate.get().month is " << navData.systemDate.get().month);
+            RCLCPP_INFO_STREAM(this->getNode()->get_logger(), "navData.systemDate.get().day is " << navData.systemDate.get().day);
             // Step 1 : to gregorian date
             boost::gregorian::date survey_day(navData.systemDate.get().year,
                                               navData.systemDate.get().month,
                                               navData.systemDate.get().day);
-
             // Step 2 : to unix date
             boost::gregorian::date unix_origin(1970, 1, 1);
             boost::posix_time::ptime survey_day_p = boost::posix_time::ptime(survey_day);
