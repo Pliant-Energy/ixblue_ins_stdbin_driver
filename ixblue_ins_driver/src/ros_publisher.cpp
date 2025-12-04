@@ -12,8 +12,11 @@ ROSPublisher::ROSPublisher(rclcpp::Node::SharedPtr nh) : nh(nh), diagPub(nh)
     nh->get_parameter("frame_id", frame_id);
     nh->declare_parameter<std::string>("time_source", "ins");
     nh->get_parameter("time_source", time_source);
+    // RCLCPP_INFO_STREAM(this->nh->get_logger(), "dz/wip-issue-1 debug, time_source parameter is: " << time_source);
     nh->declare_parameter<std::string>("time_origin", "unix");
     nh->get_parameter("time_origin", time_origin);
+    // RCLCPP_INFO_STREAM(this->nh->get_logger(), "dz/wip-issue-1 debug, time_origin parameter is: " << time_origin);
+
     nh->declare_parameter<bool>("use_compensated_acceleration", false);
     nh->get_parameter("use_compensated_acceleration", use_compensated_acceleration);
 
@@ -124,7 +127,7 @@ ROSPublisher::getHeader(const ixblue_stdbin_decoder::Data::NavHeader& headerData
     // --- Timestamp
     if(useInsAsTimeReference)
     {
-        RCLCPP_INFO_STREAM(this->getNode()->get_logger(), "headerData.navigationDataValidityTime_100us is: " << headerData.navigationDataValidityTime_100us);
+        RCLCPP_DEBUG_STREAM(this->nh->get_logger(), "headerData.navigationDataValidityTime_100us is: " << headerData.navigationDataValidityTime_100us);
         uint32_t sec = (uint32_t)((headerData.navigationDataValidityTime_100us) / 10000);
         uint32_t nsec =
             (uint32_t)(((headerData.navigationDataValidityTime_100us) % 10000) * 100000);
@@ -132,9 +135,9 @@ ROSPublisher::getHeader(const ixblue_stdbin_decoder::Data::NavHeader& headerData
         // --- Stamp origin = unix i.e. since 1st of january 1970
         if(useUnixAsTimeOrigin)
         {
-            RCLCPP_INFO_STREAM(this->getNode()->get_logger(), "navData.systemDate.get().year is " << navData.systemDate.get().year);
-            RCLCPP_INFO_STREAM(this->getNode()->get_logger(), "navData.systemDate.get().month is " << navData.systemDate.get().month);
-            RCLCPP_INFO_STREAM(this->getNode()->get_logger(), "navData.systemDate.get().day is " << navData.systemDate.get().day);
+            RCLCPP_DEBUG_STREAM(this->nh->get_logger(), "navData.systemDate.get().year is " << navData.systemDate.get().year);
+            RCLCPP_DEBUG_STREAM(this->nh->get_logger(), "navData.systemDate.get().month is " << navData.systemDate.get().month);
+            RCLCPP_DEBUG_STREAM(this->nh->get_logger(), "navData.systemDate.get().day is " << navData.systemDate.get().day);
             // Step 1 : to gregorian date
             boost::gregorian::date survey_day(navData.systemDate.get().year,
                                               navData.systemDate.get().month,
@@ -167,7 +170,28 @@ sensor_msgs::msg::Imu::SharedPtr
 ROSPublisher::toImuMsg(const ixblue_stdbin_decoder::Data::BinaryNav& navData,
                        bool use_compensated_acceleration)
 {
+    RCLCPP_DEBUG_STREAM(
+        this->nh->get_logger(),
+        "!navData.rotationRateVesselFrame.is_initialized() :" << !navData.rotationRateVesselFrame.is_initialized()
+    );
+    RCLCPP_DEBUG_STREAM(
+        this->nh->get_logger(),
+        "!navData.attitudeQuaternion.is_initialized() : " << !navData.attitudeQuaternion.is_initialized()
+    );
+    RCLCPP_DEBUG_STREAM(
+        this->nh->get_logger(),
+        "!navData.accelerationVesselFrame.is_initialized() : " << !navData.accelerationVesselFrame.is_initialized()
+    );
+    RCLCPP_DEBUG_STREAM(
+        this->nh->get_logger(),
+        "!navData.rawAccelerationVesselFrame.is_initialized() : " << !navData.rawAccelerationVesselFrame.is_initialized()
+    );
+    RCLCPP_DEBUG_STREAM(
+        this->nh->get_logger(),
+        "use_compensated_acceleration : " << use_compensated_acceleration
+    );
 
+    
     // --- Check if there are enough data to send the message
     if(!navData.rotationRateVesselFrame.is_initialized() ||
        !navData.attitudeQuaternion.is_initialized() ||
