@@ -180,16 +180,24 @@ ROSPublisher::toImuMsg(const ixblue_stdbin_decoder::Data::BinaryNav& navData,
     );
     RCLCPP_DEBUG_STREAM(
         this->nh->get_logger(),
-        "!navData.accelerationVesselFrame.is_initialized() : " << !navData.accelerationVesselFrame.is_initialized()
+        "(use_compensated_acceleration && !navData.accelerationVesselFrame.is_initialized()) : " << (use_compensated_acceleration &&
+        !navData.accelerationVesselFrame.is_initialized())
     );
     RCLCPP_DEBUG_STREAM(
         this->nh->get_logger(),
-        "!navData.rawAccelerationVesselFrame.is_initialized() : " << !navData.rawAccelerationVesselFrame.is_initialized()
+        "(!use_compensated_acceleration && !navData.rawAccelerationVesselFrame.is_initialized()) : " << (!use_compensated_acceleration &&
+        !navData.rawAccelerationVesselFrame.is_initialized())
     );
     RCLCPP_DEBUG_STREAM(
         this->nh->get_logger(),
-        "use_compensated_acceleration : " << use_compensated_acceleration
+        "Initialized variables for /standard/imu"
+        << "\nnavData.rotationRateVesselFrame.is_initialized()? " << navData.rotationRateVesselFrame.is_initialized()
+        << "\nnavData.attitudeQuaternion.is_initialized()? " << navData.attitudeQuaternion.is_initialized()
+        << "\nnavData.accelerationVesselFrame.is_initialized()? " << navData.accelerationVesselFrame.is_initialized()
+        << "\nnavData.rawAccelerationVesselFrame.is_initialized()? " << navData.rawAccelerationVesselFrame.is_initialized()
+        << "\nuse_compensated_acceleration? " << use_compensated_acceleration
     );
+
 
     
     // --- Check if there are enough data to send the message
@@ -389,7 +397,14 @@ ROSPublisher::toTimeReference(const ixblue_stdbin_decoder::Data::NavHeader& head
 ixblue_ins_msgs::msg::Ins::SharedPtr
 ROSPublisher::toiXInsMsg(const ixblue_stdbin_decoder::Data::BinaryNav& navData)
 {
-
+    RCLCPP_DEBUG_STREAM(
+        this->nh->get_logger(),
+        "Initialized variable checks for publication of /ix/ins"
+        << "\nnavData.position.is_initialized()? " << navData.position.is_initialized()
+        << "\nnavData.attitudeHeading.is_initialized()? " << navData.attitudeHeading.is_initialized()
+        << "\nnavData.speedVesselFrame.is_initialized()? " << navData.speedVesselFrame.is_initialized()
+        << "\nnavData.insUserStatus.is_initialized()? " << navData.insUserStatus.is_initialized()
+    );
     // --- Check if there are enough data to send the message
     if(navData.position.is_initialized() == false ||
        navData.attitudeHeading.is_initialized() == false ||
