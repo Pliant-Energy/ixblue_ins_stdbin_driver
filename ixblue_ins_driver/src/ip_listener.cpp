@@ -27,7 +27,7 @@ void IPListener::onNewDataReceived(const boost::system::error_code& error,
     }
     else
     {
-        RCLCPP_DEBUG_STREAM(nh->get_logger(), "Received StdBin data");
+        RCLCPP_DEBUG_STREAM(nh->get_logger(), "Received StdBin data with " << bytes_transfered << " bytes_transfered");
         // No errors, we can parse it :
         try
         {
