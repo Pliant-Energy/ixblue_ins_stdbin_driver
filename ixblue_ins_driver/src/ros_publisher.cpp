@@ -123,11 +123,26 @@ ROSPublisher::getHeader(const ixblue_stdbin_decoder::Data::NavHeader& headerData
 
     // --- Frame ID
     res.frame_id = frame_id;
+    RCLCPP_DEBUG_STREAM(
+        this->nh->get_logger(),
+        "ROSPublisher::getHeader headerData Info"
+        << "\nheaderData.telegramSize : " << headerData.telegramSize
+        << "\nheaderData.protocolVersion : " << headerData.protocolVersion
+        << "\nheaderData.navigationBitMask : " << headerData.navigationBitMask
+        //<< "\nheaderData.messageType : " << headerData.messageType
+        << "\nheaderData.navigationDataValidityTime_100us : " << headerData.navigationDataValidityTime_100us
+    );
+    RCLCPP_DEBUG_STREAM(
+        this->nh->get_logger(),
+        "ROSPublisher::getHeader navData Date Info"
+        << "\nnavData.systemDate.get().year : " << navData.systemDate.get().year
+        << "\nnavData.systemDate.get().month : " << navData.systemDate.get().month
+        << "\nnavData.systemDate.get().day :" << navData.systemDate.get().day
+    );
 
     // --- Timestamp
     if(useInsAsTimeReference)
     {
-        RCLCPP_DEBUG_STREAM(this->nh->get_logger(), "headerData.navigationDataValidityTime_100us is: " << headerData.navigationDataValidityTime_100us);
         uint32_t sec = (uint32_t)((headerData.navigationDataValidityTime_100us) / 10000);
         uint32_t nsec =
             (uint32_t)(((headerData.navigationDataValidityTime_100us) % 10000) * 100000);
@@ -135,9 +150,6 @@ ROSPublisher::getHeader(const ixblue_stdbin_decoder::Data::NavHeader& headerData
         // --- Stamp origin = unix i.e. since 1st of january 1970
         if(useUnixAsTimeOrigin)
         {
-            RCLCPP_DEBUG_STREAM(this->nh->get_logger(), "navData.systemDate.get().year is " << navData.systemDate.get().year);
-            RCLCPP_DEBUG_STREAM(this->nh->get_logger(), "navData.systemDate.get().month is " << navData.systemDate.get().month);
-            RCLCPP_DEBUG_STREAM(this->nh->get_logger(), "navData.systemDate.get().day is " << navData.systemDate.get().day);
             // Step 1 : to gregorian date
             boost::gregorian::date survey_day(navData.systemDate.get().year,
                                               navData.systemDate.get().month,
