@@ -127,7 +127,7 @@ ROSPublisher::getHeader(const ixblue_stdbin_decoder::Data::NavHeader& headerData
         this->nh->get_logger(),
         "ROSPublisher::getHeader headerData Info"
         << "\nheaderData.telegramSize : " << headerData.telegramSize
-        << "\nheaderData.protocolVersion : " << headerData.protocolVersion
+        << "\nheaderData.protocolVersion : " << std::to_string(headerData.protocolVersion)
         << "\nheaderData.navigationBitMask : " << headerData.navigationBitMask
         << "\nheaderData.messageType is navData? : " << ( headerData.messageType == ixblue_stdbin_decoder::Data::NavHeader::MessageType::NavData)
         << "\nheaderData.navigationDataValidityTime_100us : " << headerData.navigationDataValidityTime_100us
