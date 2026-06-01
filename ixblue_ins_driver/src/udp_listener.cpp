@@ -5,7 +5,7 @@ using namespace boost::asio;
 
 UDPListener::UDPListener(const std::string& ip, uint16_t port, rclcpp::Node::SharedPtr nh)
     : IPListener(ip, port, nh),
-      socket(service, ip::udp::endpoint(ip::address::from_string(ip), port))
+      socket(service, ip::udp::endpoint(ip::make_address(ip), port))
 {
     listenNextData();
     RCLCPP_DEBUG_STREAM(nh->get_logger(), "Starting asio thread");

@@ -112,7 +112,7 @@ int main(int argc, char* argv[])
     shouldRepeat = vm.count("repeat") > 0;
     period_ms = vm["period"].as<long>();
 
-    endPoint = ip::udp::endpoint(ip::address::from_string(vm["ip"].as<std::string>()),
+    endPoint = ip::udp::endpoint(ip::make_address(vm["ip"].as<std::string>()),
                                  vm["port"].as<uint16_t>());
     UDPSocket.open(ip::udp::v4());
     socket_base::reuse_address option(true);
