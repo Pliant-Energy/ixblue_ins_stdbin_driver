@@ -29,7 +29,7 @@ find_package(Threads)
 #   find_package(PCAP REQUIRED)
 #   find_package(Boost REQUIRED COMPONENTS system program_options)
 #else()
-   find_package(Boost REQUIRED COMPONENTS system)
+   find_package(Boost REQUIRED)
 #endif()
 
 ###########
